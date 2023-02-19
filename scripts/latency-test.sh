@@ -66,3 +66,4 @@ echo "AVG LN RECEIVE TIME: $LN_RECEIVE seconds"
 [[ $(echo "$REISSUE < 5" | bc -l) = 1 ]]
 [[ $(echo "$LN_SEND < 5" | bc -l) = 1 ]]
 [[ $(echo "$LN_RECEIVE < 5" | bc -l) = 1 ]]
+foo
