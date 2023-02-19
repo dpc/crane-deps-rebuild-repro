@@ -121,27 +121,11 @@
               nativeBuildInputs = with pkgs; commonArgs.nativeBuildInputs ++ [
                 fenix.packages.${system}.rust-analyzer
                 fenixToolchainRustfmt
-                cargo-udeps
-                pkgs.parallel
-                pkgs.just
-                cargo-spellcheck
-
-                (pkgs.writeShellScriptBin "git-recommit" "exec git commit --edit -F <(cat \"$(git rev-parse --git-path COMMIT_EDITMSG)\" | grep -v -E '^#.*') \"$@\"")
 
                 # This is required to prevent a mangled bash shell in nix develop
                 # see: https://discourse.nixos.org/t/interactive-bash-with-nix-develop-flake/15486
                 (hiPrio pkgs.bashInteractive)
                 tmux
-                tmuxinator
-
-                # Nix
-                pkgs.nixpkgs-fmt
-                pkgs.shellcheck
-                pkgs.rnix-lsp
-                pkgs-unstable.convco
-                pkgs.nodePackages.bash-language-server
-              ] ++ lib.optionals (!stdenv.isAarch64 || !stdenv.isDarwin) [
-                pkgs.semgrep
               ];
               RUST_SRC_PATH = "${fenixChannel.rust-src}/lib/rustlib/src/rust/library";
               LIBCLANG_PATH = "${pkgs.libclang.lib}/lib/";
@@ -160,11 +144,6 @@
 
           };
       });
-
-  nixConfig = {
-    extra-substituters = [ "https://fedimint.cachix.org" ];
-    extra-trusted-public-keys = [ "fedimint.cachix.org-1:FpJJjy1iPVlvyv4OMiN5y9+/arFLPcnZhZVVCHCDYTs=" ];
-  };
 
 
 }
