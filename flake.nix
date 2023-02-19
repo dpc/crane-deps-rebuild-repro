@@ -26,10 +26,6 @@
           inherit system;
         };
 
-        lib = pkgs.lib;
-        stdenv = pkgs.stdenv;
-
-
         fenixChannel = fenix.packages.${system}.stable;
 
         fenixToolchain = (fenixChannel.withComponents [
@@ -39,7 +35,6 @@
           "rust-analysis"
           "rust-src"
         ]);
-
 
 
         craneLib = crane.lib.${system}.overrideToolchain fenixToolchain;
@@ -54,18 +49,9 @@
           nativeBuildInputs = with pkgs; [
             pkg-config
           ];
-
-
-          LIBCLANG_PATH = "${pkgs.libclang.lib}/lib/";
-          ROCKSDB_LIB_DIR = "${pkgs.rocksdb}/lib/";
-          PROTOC = "${pkgs.protobuf}/bin/protoc";
-          PROTOC_INCLUDE = "${pkgs.protobuf}/include";
-          CI = "true";
-          HOME = "/tmp";
         };
 
         workspaceDeps = craneLib.buildDepsOnly (commonArgs // {
-
           src = ./.;
         });
 
@@ -101,7 +87,6 @@
               ];
               RUST_SRC_PATH = "${fenixChannel.rust-src}/lib/rustlib/src/rust/library";
               LIBCLANG_PATH = "${pkgs.libclang.lib}/lib/";
-              ROCKSDB_LIB_DIR = "${pkgs.rocksdb}/lib/";
             };
 
           in
