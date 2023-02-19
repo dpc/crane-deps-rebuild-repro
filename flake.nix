@@ -38,7 +38,6 @@
           "clippy"
           "rust-analysis"
           "rust-src"
-          "llvm-tools-preview"
         ]);
 
 
@@ -48,24 +47,8 @@
 
         commonArgs = {
           pname = "fedimint-workspace";
-          # src = filterWorkspaceFiles ./.;
 
-          buildInputs = with pkgs; [
-            clang
-            gcc
-            openssl
-            pkg-config
-            perl
-            pkgs.llvmPackages.bintools
-            rocksdb
-            protobuf
-          ] ++ lib.optionals stdenv.isDarwin [
-            libiconv
-            darwin.apple_sdk.frameworks.Security
-            zld
-          ] ++ lib.optionals (!(stdenv.isAarch64 || stdenv.isDarwin)) [
-            # mold is currently broken on ARM and MacOS
-            mold
+          buildInputs = [
           ];
 
           nativeBuildInputs = with pkgs; [
