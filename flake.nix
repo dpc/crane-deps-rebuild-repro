@@ -26,16 +26,11 @@
           inherit system;
         };
 
-        pkgs-unstable = import nixpkgs-unstable {
-          inherit system;
-        };
-
         lib = pkgs.lib;
         stdenv = pkgs.stdenv;
 
 
         fenixChannel = fenix.packages.${system}.stable;
-        fenixChannelNightly = fenix.packages.${system}.latest;
 
         fenixToolchain = (fenixChannel.withComponents [
           "rustc"
@@ -46,9 +41,6 @@
           "llvm-tools-preview"
         ]);
 
-        fenixToolchainRustfmt = (fenixChannelNightly.withComponents [
-          "rustfmt"
-        ]);
 
 
         craneLib = crane.lib.${system}.overrideToolchain fenixToolchain;
@@ -119,13 +111,10 @@
             shellCommon = {
               buildInputs = commonArgs.buildInputs;
               nativeBuildInputs = with pkgs; commonArgs.nativeBuildInputs ++ [
-                fenix.packages.${system}.rust-analyzer
-                fenixToolchainRustfmt
 
                 # This is required to prevent a mangled bash shell in nix develop
                 # see: https://discourse.nixos.org/t/interactive-bash-with-nix-develop-flake/15486
                 (hiPrio pkgs.bashInteractive)
-                tmux
               ];
               RUST_SRC_PATH = "${fenixChannel.rust-src}/lib/rustlib/src/rust/library";
               LIBCLANG_PATH = "${pkgs.libclang.lib}/lib/";
