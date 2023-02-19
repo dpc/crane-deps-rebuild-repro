@@ -146,45 +146,6 @@
               RUST_SRC_PATH = "${fenixChannel.rust-src}/lib/rustlib/src/rust/library";
               LIBCLANG_PATH = "${pkgs.libclang.lib}/lib/";
               ROCKSDB_LIB_DIR = "${pkgs.rocksdb}/lib/";
-
-              shellHook = ''
-                # auto-install git hooks
-                dot_git="$(git rev-parse --git-common-dir)"
-                if [[ ! -d "$dot_git/hooks" ]]; then mkdir "$dot_git/hooks"; fi
-                for hook in misc/git-hooks/* ; do ln -sf "$(pwd)/$hook" "$dot_git/hooks/" ; done
-                ${pkgs.git}/bin/git config commit.template misc/git-hooks/commit-template.txt
-
-                # workaround https://github.com/rust-lang/cargo/issues/11020
-                cargo_cmd_bins=( $(ls $HOME/.cargo/bin/cargo-{clippy,udeps,llvm-cov} 2>/dev/null) )
-                if (( ''${#cargo_cmd_bins[@]} != 0 )); then
-                  >&2 echo "⚠️  Detected binaries that might conflict with reproducible environment: ''${cargo_cmd_bins[@]}" 1>&2
-                  >&2 echo "   Considering deleting them. See https://github.com/rust-lang/cargo/issues/11020 for details" 1>&2
-                fi
-
-                # Note: the string escaping necessary here (Nix's multi-line string and shell's) is mind-twisting.
-                if [ -n "$TMUX" ]; then
-                  # if [ "$(tmux show-options -A default-command)" == 'default-command* \'\''' ]; then
-                  if [ "$(tmux show-options -A default-command)" == 'bla' ]; then
-                    echo
-                    >&2 echo "⚠️  tmux's 'default-command' not set"
-                    >&2 echo " ️  Please add 'set -g default-command \"\''${SHELL}\"' to your '$HOME/.tmux.conf' for tmuxinator test setup to work correctly"
-                  fi
-                fi
-
-                # if runing in direnv
-                if [ -n "''${DIRENV_IN_ENVRC:-}" ]; then
-                  # and not set DIRENV_LOG_FORMAT
-                  if [ -n "''${DIRENV_LOG_FORMAT:-}" ]; then
-                    >&2 echo "💡 Set 'DIRENV_LOG_FORMAT=\"\"' in your shell environment variables for a cleaner output of direnv"
-                  fi
-                fi
-
-                >&2 echo "💡 Run 'just' for a list of available 'just ...' helper recipies"
-
-                if [ "$(ulimit -Sn)" -lt "1024" ]; then
-                    >&2 echo "⚠️  ulimit too small. Run 'ulimit -Sn 1024' to avoid problems running tests"
-                fi
-              '';
             };
 
           in
